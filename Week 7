@@ -1,5 +1,5 @@
 
-Prob 1
+prob 1
 
 #include <algorithm>
 #include <iostream>
@@ -10,74 +10,75 @@ Prob 1
 using namespace std;
 
 void print_dist(vector<int> &dist) {
-    for (int i : dist)
-        cout << i << " ";
+ for (int i : dist)
+ cout << i << " ";
 }
 
 void dijkstra(int n, vector<vector<int>> &graph, int src, vector<int> &dist, vector<int> &pre) {
-    dist.assign(n, INT_MAX);
-    pre.assign(n, -1);
-    vector<bool> vis(n, false);
+ dist.assign(n, INT_MAX);
+ pre.assign(n, -1);
+ vector<bool> vis(n, false);
 
-    dist[src] = 0;
-    for (int i = 0; i < n; i++) {
-        int index, min_dist = INT_MAX;
-        for (int j = 0; j < n; j++) {
-            if (!vis[j] and dist[j] <= min_dist) {
-                min_dist = dist[j], index = j;
-            }
-        }
+ dist[src] = 0;
+ for (int i = 0; i < n; i++) {
+ int index, min_dist = INT_MAX;
+ for (int j = 0; j < n; j++) {
+ if (!vis[j] and dist[j] <= min_dist) {
+ min_dist = dist[j], index = j;
+ }
+ }
 
-        vis[index] = true;
-        for (int v = 0; v < n; v++) {
-            if (!vis[v] and graph[index][v] and dist[index] != INT_MAX and (dist[index] + graph[index][v] < dist[v])) {
-                dist[v] = dist[index] + graph[index][v];
-                pre[v] = index;
-            }
-        }
-    }
+ vis[index] = true;
+ for (int v = 0; v < n; v++) {
+ if (!vis[v] and graph[index][v] and dist[index] != INT_MAX and (dist[index] + graph[index][v] < dist[v])) {
+ dist[v] = dist[index] + graph[index][v];
+ pre[v] = index;
+ }
+ }
+ }
 }
 
 vector<int> return_path(int src, int to, vector<int> const &pre) {
-    vector<int> path;
+ vector<int> path;
 
-    for (int v = to; v != src; v = pre[v]) {
-        path.push_back(v + 1);
-    }
-    path.push_back(src + 1);
-    return path;
+ for (int v = to; v != src; v = pre[v]) {
+ path.push_back(v + 1);
+ }
+ path.push_back(src + 1);
+ return path;
 }
 
 int main() {
-    int n;
-    cin >> n;
-    vector<vector<int>> graph;
-    int k;
-    for (int i = 0; i < n; i++) {
-        vector<int> row;
-        for (int j = 0; j < n; j++) {
-            cin >> k;
-            row.push_back(k);
-        }
-        graph.push_back(row);
-    }
-    int src;
-    cin >> src;
-    --src;
+ int n;
+ cin >> n;
+ vector<vector<int>> graph;
+ int k;
+ for (int i = 0; i < n; i++) {
+ vector<int> row;
+ for (int j = 0; j < n; j++) {
+ cin >> k;
+ row.push_back(k);
+ }
+ graph.push_back(row);
+ }
+ int src;
+ cin >> src;
+ --src;
 
-    vector<int> dist(n), pre(n);
-    dijkstra(n, graph, src, dist, pre);
+ vector<int> dist(n), pre(n);
+ dijkstra(n, graph, src, dist, pre);
 
-    for (int i = 0; i < n; i++) {
-        vector<int> curr_path = return_path(src, i, pre);
-        for (int x : curr_path)
-            cout << x << " ";
-        cout << ": " << dist[i] << endl;
-    }
+ for (int i = 0; i < n; i++) {
+ vector<int> curr_path = return_path(src, i, pre);
+ for (int x : curr_path)
+ cout << x << " ";
+ cout << ": " << dist[i] << endl;
+ }
 
-    //print_dist(dist);
-    return 0;
+ //print_dist(dist);
+ return 0;
 }
+
 
 
 Prob 2
@@ -90,53 +91,119 @@ using namespace std;
 #define INT_MAX 100000
 
 void bellman_ford(vector<vector<int>> &adj, int src, vector<int> &dist, vector<int> &pre) {
-    int V = adj.size();
-    dist.assign(V, INT_MAX);
-    pre.assign(V, -1);
-    dist[src] = 0;
+ int V = adj.size();
+ dist.assign(V, INT_MAX);
+ pre.assign(V, -1);
+ dist[src] = 0;
 
-    for (int i = 0; i < V - 1; i++) {
-        for (int u = 0; u < V; u++) {
-            for (int v = 0; v < V; v++) {
-                if (adj[u][v]) {
-                    if (dist[u] != INT_MAX && dist[u] + adj[u][v] < dist[v]) {
-                        dist[v] = dist[u] + adj[u][v];
-                        pre[v] = u;
-                    }
-                }
-            }
-        }
-    }
+ for (int i = 0; i < V - 1; i++) {
+ for (int u = 0; u < V; u++) {
+ for (int v = 0; v < V; v++) {
+ if (adj[u][v]) {
+ if (dist[u] != INT_MAX && dist[u] + adj[u][v] < dist[v]) {
+ dist[v] = dist[u] + adj[u][v];
+ pre[v] = u;
+ }
+ }
+ }
+ }
+ }
 }
 
 vector<int> return_path(int src, int to, vector<int> const &pre) {
-    vector<int> path;
-    for (int v = to; v != src; v = pre[v]) {
-        path.push_back(v + 1);
-    }
-    path.push_back(src + 1);
-    return path;
+ vector<int> path;
+ for (int v = to; v != src; v = pre[v]) {
+ path.push_back(v + 1);
+ }
+ path.push_back(src + 1);
+ return path;
 }
 
 int main() {
-    int V;
-    cin >> V;
-    vector<vector<int>> adj;
-    for (int i = 0; i < V; i++) {
-        int k;
-        vector<int> val(V);
-        for (int j = 0; j < V; j++) {
-            cin >> k;
-            val.push_back(k);
-        }
-        adj.push_back(val);
-    }
-    int src;
-    cin >> src;
-    --src;
+ int V;
+ cin >> V;
+ vector<vector<int>> adj;
+ for (int i = 0; i < V; i++) {
+ int k;
+ vector<int> val(V);
+ for (int j = 0; j < V; j++) {
+ cin >> k;
+ val.push_back(k);
+ }
+ adj.push_back(val);
+ }
+ int src;
+ cin >> src;
+ --src;
 
-    vector<int> dist(V), pre(V);
-    bellman_ford(adj, src, dist, pre);
+ vector<int> dist(V), pre(V);
+ bellman_ford(adj, src, dist, pre);
 
-    for (int i = 0; i < V; i++) {
-        vector<int> curr_path = return_path(src, i, pre);
+ for (int i = 0; i < V; i++) {
+ vector<int> curr_path = return_path(src, i, pre);
+ for (int x : curr_path)
+ cout << x << " ";
+ (dist[i] == INT_MAX) ? cout << ": INF\n" : cout << ": " << dist[i] << endl;
+ }
+ return 0;
+}
+
+
+
+
+Prob 3
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Given a directed graph with two vertices(src and dest), find the weight of the shortest
+// path from source to destination with exactly k edges on the path.
+// Complexities: Tim -> O(k * V2), Space: O(k * V).
+
+#define INF 1e6
+
+int shortestPath(vector<vector<int>> &adj, int src, int dest, int k) {
+ int V = adj.size();
+ vector<vector<int>> dp(k, vector<int>(V, INF));
+ for (int i = 0; i < V; i++)
+ dp[0][i] = adj[src][i];
+ for (int e = 1; e < k; e++) {
+ for (int i = 0; i < V; i++) {
+ if (dp[e - 1][i] != INF) {
+ for (int j = 0; j < V; j++) {
+ if (adj[i][j] != INF) {
+ dp[e][j] = min(dp[e][j], dp[e - 1][i] + adj[i][j]);
+ }
+ }
+ }
+ }
+ }
+
+ // for (int i = 0; i < k; i++) {
+ // for (int j = 0; j < V; j++)
+ // cout << dp[i][j] << " ";
+ // cout << "\n";
+ // }
+
+ return dp[k - 1][dest];
+}
+
+int main() {
+ int V;
+ cin >> V;
+ vector<vector<int>> adj(V, vector<int>(V, 0));
+ for (int i = 0; i < V; i++) {
+ for (int j = 0; j < V; j++) {
+ cin >> adj[i][j];
+ adj[i][j] = (adj[i][j] == 0) ? INF : adj[i][j];
+ }
+ }
+ int src, dest, k;
+ cin >> src >> dest;
+ cin >> k;
+ int dist = shortestPath(adj, src - 1, dest - 1, k);
+ cout << "Weight of shortest path from (" << src << ", " << dest << ") with " << k << " edges: " << dist << endl;
+ return 0;
+}
+
